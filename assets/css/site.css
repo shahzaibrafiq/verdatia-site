@@ -1,0 +1,409 @@
+/* ============================================================
+   Verdatia — site.css
+   Web layer over DESIGN.md. Tokens lifted from brand-board.html.
+   Hard rules: numerals always IBM Plex Mono · red only for findings
+   1px rules never shadows · the rule-off closes every page.
+   ============================================================ */
+
+/* ---- Tokens: light ("ledger in daylight") ---- */
+:root {
+  --bg: #F4F3EA;
+  --surface: #FCFBF4;
+  --ink: #191D19;
+  --muted: #5E6459;
+  --rule: #D9D8C7;
+  --accent: #155A3B;
+  --accent-ink: #FCFBF4;
+  --flag: #B7402C;
+  --tick: #155A3B;
+
+  --display: 'Besley', Georgia, serif;
+  --body: 'Libre Franklin', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --content: 1080px;
+  --prose: 680px;
+
+  --s1: 4px;  --s2: 8px;  --s3: 12px; --s4: 16px;
+  --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px; --s9: 96px;
+}
+
+/* ---- Tokens: dark ("desk at night") — negative of the ledger ---- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111512;
+    --surface: #181D19;
+    --ink: #ECEDE2;
+    --muted: #98A093;
+    --rule: #2A312B;
+    --accent: #55B98B;
+    --accent-ink: #111512;
+    --flag: #DE6B52;
+    --tick: #55B98B;
+  }
+}
+
+/* ---- Reset ---- */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img, svg { max-width: 100%; height: auto; display: block; }
+
+/* ============================================================
+   Numerals — IBM Plex Mono, always. No digits in the text faces.
+   ============================================================ */
+.num, .mono, time, td.num, .price, .folio, .rownum {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Negative amounts: red, in parentheses. Never decoration. */
+.neg { color: var(--flag); font-family: var(--mono); }
+
+/* ============================================================
+   Layout — document grid
+   ============================================================ */
+.wrap { width: 100%; max-width: var(--content); margin-inline: auto; padding-inline: var(--s5); }
+.prose { max-width: var(--prose); }
+
+section { padding-block: var(--s8); }
+section + section { border-top: 1px solid var(--rule); }
+
+/* Anchor landings must clear the sticky header (~63px desktop / ~67px mobile).
+   Without this the target's heading lands underneath it — section padding
+   cancels the overlap on desktop by coincidence, but not at mobile's smaller
+   padding. Set explicitly rather than relying on that accident. */
+section[id], .ledger .row[id] { scroll-margin-top: 72px; }
+
+@media (max-width: 720px) {
+  section { padding-block: var(--s7); }
+}
+
+/* ============================================================
+   Type scale
+   ============================================================ */
+h1, h2, h3, h4 { font-family: var(--display); font-weight: 600; line-height: 1.15; letter-spacing: -0.01em; }
+
+h1 { font-size: clamp(2.4rem, 6vw, 4rem); }
+h2 { font-size: clamp(1.6rem, 3.2vw, 2.2rem); }
+h3 { font-size: 1.2rem; }
+
+p { max-width: var(--prose); }
+p + p { margin-top: var(--s4); }
+
+.lede { font-size: 1.15rem; color: var(--muted); line-height: 1.6; }
+
+/* Kicker — mono, letterspaced, the section's folio marker */
+.kicker {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: var(--s4);
+}
+
+/* ============================================================
+   The rule-off — 3px + 1.5px double rule. The brand full stop.
+   ============================================================ */
+.ruleoff { border: 0; margin-top: var(--s8); }
+.ruleoff::before,
+.ruleoff::after { content: ""; display: block; background: var(--ink); }
+.ruleoff::before { height: 3px; }
+.ruleoff::after { height: 1.5px; margin-top: 3px; }
+
+/* ============================================================
+   Links & buttons — green is the only accent voice
+   ============================================================ */
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { text-decoration-thickness: 2px; }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+.btn {
+  display: inline-block;
+  font-family: var(--body);
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: var(--s3) var(--s5);
+  border-radius: 3px;
+  border: 1.5px solid var(--accent);
+  text-decoration: none;
+  transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;
+}
+.btn-primary { background: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover { background: transparent; color: var(--accent); }
+.btn-ghost { background: transparent; color: var(--accent); }
+.btn-ghost:hover { background: var(--accent); color: var(--accent-ink); }
+
+.btn-row { display: flex; flex-wrap: wrap; gap: var(--s3); margin-top: var(--s5); }
+
+/* ============================================================
+   Header / nav — CSS-only mobile disclosure, zero JS
+   ============================================================ */
+.site-header { border-bottom: 1px solid var(--rule); position: sticky; top: 0; background: var(--bg); z-index: 10; }
+.nav { display: flex; align-items: center; justify-content: space-between; gap: var(--s5); padding-block: var(--s4); }
+.nav-logo img { height: 30px; width: auto; }
+
+.nav-links { display: flex; align-items: center; gap: var(--s5); list-style: none; }
+.nav-links a {
+  color: var(--ink); text-decoration: none; font-size: 0.92rem;
+  /* transparent rule reserves the space so the current state can't shift layout */
+  border-bottom: 1.5px solid transparent; padding-bottom: 3px;
+  transition: color 160ms ease, border-color 160ms ease;
+}
+.nav-links a:hover { color: var(--accent); }
+/* Current page = green PLUS the rule. Colour alone can't carry this: the CONTACT
+   CTA is green at rest, so on /contact/ a colour-only state is invisible. The rule
+   is the brand's own mark of "this one" — and it works for every item, CTA included. */
+.nav-links a[aria-current="page"] { color: var(--accent); border-bottom-color: var(--accent); }
+.nav-cta { font-family: var(--mono) !important; font-size: 0.8rem !important; letter-spacing: 0.08em; color: var(--accent) !important; }
+
+.nav-toggle, .nav-toggle-label { display: none; }
+
+/* Desktop nav measures 694px with the lockup; collapse only below 760px
+   so tablets and narrow panes keep the full nav. */
+@media (max-width: 760px) {
+  .nav { flex-wrap: wrap; }
+  .nav-toggle-label {
+    display: block; cursor: pointer; font-family: var(--mono);
+    font-size: 0.75rem; letter-spacing: 0.1em; color: var(--muted);
+    border: 1.5px solid var(--rule); border-radius: 3px; padding: 6px 12px;
+  }
+  .nav-links {
+    display: none; flex-basis: 100%; flex-direction: column;
+    align-items: flex-start; gap: var(--s3); padding-block: var(--s4);
+    border-top: 1px solid var(--rule); margin-top: var(--s4);
+  }
+  .nav-toggle:checked ~ .nav-links { display: flex; }
+}
+
+/* ============================================================
+   Hero
+   ============================================================ */
+.hero { padding-block: var(--s9) var(--s8); }
+.hero-grid { display: grid; grid-template-columns: 1.25fr 1fr; gap: var(--s8); align-items: center; }
+.hero h1 { margin-bottom: var(--s5); }
+
+@media (max-width: 860px) {
+  .hero { padding-block: var(--s7); }
+  .hero-grid { grid-template-columns: 1fr; gap: var(--s7); }
+}
+
+/* ============================================================
+   Cards & tiles — radius 0, 1px rules, never shadows
+   ============================================================ */
+.tile {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  padding: var(--s5);
+}
+.tile-head {
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--muted);
+  padding-bottom: var(--s3); margin-bottom: var(--s3);
+  border-bottom: 1px solid var(--rule);
+}
+.tile-row { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s4); padding-block: var(--s2); }
+.tile-row + .tile-row { border-top: 1px solid var(--rule); }
+.tile-row .label { color: var(--muted); font-size: 0.9rem; }
+.tile-row .val { font-family: var(--mono); font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+.tick { color: var(--tick); }
+.flag { color: var(--flag); }
+
+/* ============================================================
+   Ledger index — mono row numbers, no icons
+   ============================================================ */
+.ledger { list-style: none; border-top: 1px solid var(--rule); }
+.ledger li { border-bottom: 1px solid var(--rule); }
+.ledger a, .ledger .row {
+  display: grid; grid-template-columns: 48px 1fr auto; gap: var(--s4);
+  align-items: baseline; padding-block: var(--s5);
+  text-decoration: none; color: var(--ink);
+  transition: background-color 160ms ease;
+}
+.ledger a:hover { background: var(--surface); }
+.ledger .rownum { color: var(--muted); font-size: 0.85rem; }
+.ledger .name { display: block; font-family: var(--display); font-size: 1.15rem; font-weight: 600; line-height: 1.25; }
+.ledger .deliverable { display: block; color: var(--muted); font-size: 0.92rem; margin-top: var(--s2); max-width: 62ch; line-height: 1.5; }
+.ledger .arrow { font-family: var(--mono); color: var(--accent); font-size: 0.85rem; }
+.ledger .spec-tag {
+  font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.12em;
+  color: var(--accent); border: 1px solid var(--accent);
+  border-radius: 3px; padding: 2px 6px; margin-left: var(--s2);
+  white-space: nowrap;
+}
+@media (max-width: 720px) {
+  .ledger a, .ledger .row { grid-template-columns: 32px 1fr; }
+  .ledger .arrow { display: none; }
+}
+
+/* ============================================================
+   Flagship band — full-width ruled strip
+   ============================================================ */
+.band { background: var(--surface); border-block: 1px solid var(--rule); }
+
+/* ============================================================
+   Fee schedule — lawyer's register. Mono numerals, right-aligned.
+   Never SaaS pricing cards.
+   ============================================================ */
+.fees { width: 100%; border-collapse: collapse; margin-top: var(--s5); }
+.fees caption {
+  text-align: left; color: var(--muted); font-size: 0.9rem;
+  padding-bottom: var(--s4); max-width: var(--prose);
+}
+.fees th {
+  text-align: left; font-family: var(--mono); font-weight: 500;
+  font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--muted); padding-block: var(--s3);
+  border-bottom: 1.5px solid var(--ink);
+}
+.fees th.r, .fees td.r { text-align: right; }
+.fees td { padding-block: var(--s5); border-bottom: 1px solid var(--rule); vertical-align: baseline; }
+.fees .offer { font-family: var(--display); font-size: 1.1rem; font-weight: 600; }
+.fees .price { font-size: 1.15rem; font-weight: 600; white-space: nowrap; }
+.fees .unit { color: var(--muted); font-size: 0.8rem; font-family: var(--mono); }
+.fees .desc { color: var(--muted); font-size: 0.92rem; }
+
+@media (max-width: 720px) {
+  .fees thead { display: none; }
+  .fees tr { display: block; border-bottom: 1px solid var(--rule); padding-block: var(--s4); }
+  .fees td { display: block; border: 0; padding-block: var(--s1); }
+  .fees td.r { text-align: left; }
+}
+
+/* ============================================================
+   Standards — numbered commitments
+   ============================================================ */
+.standards { list-style: none; counter-reset: std; display: grid; gap: var(--s5); margin-top: var(--s5); }
+.standards li {
+  counter-increment: std;
+  display: grid; grid-template-columns: 40px 1fr; gap: var(--s4);
+  align-items: baseline;
+}
+.standards li::before {
+  content: counter(std, decimal-leading-zero);
+  font-family: var(--mono); font-size: 0.85rem; color: var(--accent);
+}
+.standards p { max-width: 60ch; }
+
+/* ============================================================
+   Specimen artifacts — labelled, obviously illustrative
+   ============================================================ */
+.specimen { background: var(--surface); border: 1px solid var(--rule); padding: var(--s5); }
+.specimen-label {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--muted);
+  border: 1px solid var(--rule); border-radius: 3px;
+  padding: 3px 7px; display: inline-block; margin-bottom: var(--s4);
+}
+.specimen-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--s5); margin-top: var(--s5); }
+.specimen h4 { font-size: 1rem; margin-bottom: var(--s3); }
+.specimen .line { display: flex; justify-content: space-between; gap: var(--s4); padding-block: 6px; font-size: 0.88rem; }
+.specimen .line + .line { border-top: 1px solid var(--rule); }
+.specimen .line .v { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+/* ============================================================
+   Founder card
+   ============================================================ */
+.founder { display: grid; grid-template-columns: 96px 1fr; gap: var(--s5); align-items: start; margin-top: var(--s5); }
+.founder img { width: 96px; height: 96px; object-fit: cover; border: 1px solid var(--rule); border-radius: 3px; }
+@media (max-width: 560px) { .founder { grid-template-columns: 1fr; } }
+
+/* ============================================================
+   Footer
+   ============================================================ */
+.site-footer { padding-block: var(--s7) var(--s8); }
+.footer-grid { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s5); margin-top: var(--s5); }
+.site-footer img { height: 26px; width: auto; }
+.footer-line { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.footer-links { display: flex; flex-wrap: wrap; gap: var(--s4); list-style: none; font-size: 0.88rem; }
+.footer-legal { color: var(--muted); font-size: 0.78rem; margin-top: var(--s5); font-family: var(--mono); }
+
+/* ============================================================
+   Form — native HTML POST to Formspree. No JS.
+   ============================================================ */
+.form { max-width: var(--prose); margin-top: var(--s5); }
+.field { margin-bottom: var(--s5); }
+.field label {
+  display: block; font-family: var(--mono); font-size: 0.7rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+  margin-bottom: var(--s2);
+}
+.field input, .field textarea {
+  width: 100%; font-family: var(--body); font-size: 1rem; color: var(--ink);
+  background: var(--surface); border: 1px solid var(--rule); border-radius: 3px;
+  padding: var(--s3) var(--s4);
+  transition: border-color 160ms ease;
+}
+.field input:focus, .field textarea:focus { border-color: var(--accent); outline: none; }
+.field textarea { min-height: 140px; resize: vertical; }
+/* honeypot — hidden from humans, catches bots */
+.gotcha { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+.faq { margin-top: var(--s5); border-top: 1px solid var(--rule); }
+.faq details { border-bottom: 1px solid var(--rule); }
+.faq summary {
+  cursor: pointer; padding-block: var(--s4); font-family: var(--display);
+  font-size: 1.05rem; font-weight: 600; list-style: none;
+  display: flex; justify-content: space-between; align-items: center; gap: var(--s4);
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font-family: var(--mono); color: var(--accent); font-size: 1.1rem; }
+.faq details[open] summary::after { content: "\2212"; }
+.faq details > p { padding-bottom: var(--s5); color: var(--muted); }
+
+.channels { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--s4); margin-top: var(--s5); }
+.channel { border: 1px solid var(--rule); background: var(--surface); padding: var(--s4); border-radius: 0; }
+.channel .ch-label {
+  font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--muted); display: block; margin-bottom: var(--s2);
+}
+
+/* ============================================================
+   Utilities
+   ============================================================ */
+.skip {
+  position: absolute; left: -9999px;
+  background: var(--accent); color: var(--accent-ink);
+  padding: var(--s3) var(--s4); border-radius: 3px; z-index: 100;
+}
+.skip:focus { left: var(--s4); top: var(--s4); }
+.muted { color: var(--muted); }
+.mt-4 { margin-top: var(--s4); } .mt-5 { margin-top: var(--s5); } .mt-6 { margin-top: var(--s6); }
+.logo-dark { display: none; }
+@media (prefers-color-scheme: dark) {
+  .logo-light { display: none; }
+  .logo-dark { display: block; }
+}
+
+/* ============================================================
+   Print — /services/ and /construction-finance/ print as working papers
+   ============================================================ */
+@media print {
+  :root { --bg: #fff; --surface: #fff; --ink: #000; --muted: #444; --rule: #bbb; --accent: #155A3B; }
+  .site-header, .nav, .btn-row, .skip { display: none !important; }
+  body { font-size: 11pt; }
+  section { padding-block: 18pt; break-inside: avoid; }
+  a { text-decoration: none; color: #000; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-family: var(--mono); font-size: 8pt; color: #555; }
+  .tile, .specimen, .band { background: #fff; }
+}

@@ -7,10 +7,12 @@
 
 /* ---- Tokens: light ("ledger in daylight") ---- */
 :root {
+  color-scheme: light dark;
   --bg: #F4F3EA;
   --surface: #FCFBF4;
   --ink: #191D19;
   --muted: #5E6459;
+  --lede-ink: #5E6459;
   --rule: #D9D8C7;
   --accent: #155A3B;
   --accent-ink: #FCFBF4;
@@ -28,14 +30,21 @@
   --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px; --s9: 96px;
 }
 
-/* ---- Tokens: dark ("desk at night") — negative of the ledger ---- */
+/* ---- Tokens: dark ("desk at night") — negative of the ledger ----
+   Re-tuned 17 Jul: the original values collapsed into one black slab on
+   phones — surface vs bg was ~1.1:1 and the hairlines vanished, so the
+   ledger structure (tiles, bands, rules) that carries the brand in light
+   mode disappeared. Same green-cast family, more separation between the
+   layers. All text pairs re-verified AA (ink 15.2:1 · muted 7.3:1 ·
+   accent 7.4:1 · flag 5.4:1 on bg). */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #111512;
-    --surface: #181D19;
+    --bg: #131814;
+    --surface: #1D241E;
     --ink: #ECEDE2;
-    --muted: #98A093;
-    --rule: #2A312B;
+    --muted: #9FA79A;
+    --lede-ink: #C6CCBF;
+    --rule: #333C34;
     --accent: #55B98B;
     --accent-ink: #111512;
     --flag: #DE6B52;
@@ -107,7 +116,10 @@ h3 { font-size: 1.2rem; }
 p { max-width: var(--prose); }
 p + p { margin-top: var(--s4); }
 
-.lede { font-size: 1.15rem; color: var(--muted); line-height: 1.6; }
+.lede { font-size: 1.15rem; color: var(--lede-ink); line-height: 1.6; }
+
+/* Phrase that must never break mid-way (service-line segments, prices) */
+.nb { white-space: nowrap; }
 
 /* Kicker — mono, letterspaced, the section's folio marker */
 .kicker {
@@ -159,6 +171,11 @@ a:hover { text-decoration-thickness: 2px; }
    Header / nav — CSS-only mobile disclosure, zero JS
    ============================================================ */
 .site-header { border-bottom: 1px solid var(--rule); position: sticky; top: 0; background: var(--bg); z-index: 10; }
+/* Dark: layer the sticky header above the page like the lamp-lit desk
+   surface — light mode's paper-on-paper is the point; bg-on-bg is mud. */
+@media (prefers-color-scheme: dark) {
+  .site-header { background: var(--surface); }
+}
 .nav { display: flex; align-items: center; justify-content: space-between; gap: var(--s5); padding-block: var(--s4); }
 .nav-logo img { height: 30px; width: auto; }
 
@@ -177,6 +194,7 @@ a:hover { text-decoration-thickness: 2px; }
 .nav-cta { font-family: var(--mono) !important; font-size: 0.8rem !important; letter-spacing: 0.08em; color: var(--accent) !important; }
 
 .nav-toggle, .nav-toggle-label { display: none; }
+.nav-toggle-label .close { display: none; }
 
 /* Desktop nav measures 694px with the lockup; collapse only below 760px
    so tablets and narrow panes keep the full nav. */
@@ -193,6 +211,10 @@ a:hover { text-decoration-thickness: 2px; }
     border-top: 1px solid var(--rule); margin-top: var(--s4);
   }
   .nav-toggle:checked ~ .nav-links { display: flex; }
+  /* The button must say what it does — "MENU" on a menu that's already
+     open reads as broken. Checkbox state swaps the label text, no JS. */
+  .nav-toggle:checked ~ .nav-toggle-label .open { display: none; }
+  .nav-toggle:checked ~ .nav-toggle-label .close { display: inline; }
 }
 
 /* ============================================================
@@ -388,6 +410,14 @@ a:hover { text-decoration-thickness: 2px; }
 }
 .skip:focus { left: var(--s4); top: var(--s4); }
 .muted { color: var(--muted); }
+
+/* ---- Mobile density: on a phone the desktop paddings stack into dead
+   screens — tighten the lede and the page tail without touching desktop. */
+@media (max-width: 720px) {
+  .lede { font-size: 1.05rem; }
+  .ruleoff { margin-top: var(--s6); }
+  .site-footer { padding-block: var(--s6) var(--s7); }
+}
 .mt-4 { margin-top: var(--s4); } .mt-5 { margin-top: var(--s5); } .mt-6 { margin-top: var(--s6); }
 .logo-dark { display: none; }
 @media (prefers-color-scheme: dark) {

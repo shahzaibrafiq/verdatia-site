@@ -331,6 +331,24 @@ a:hover { text-decoration-thickness: 2px; }
 .specimen .line + .line { border-top: 1px solid var(--rule); }
 .specimen .line .v { font-family: var(--mono); font-variant-numeric: tabular-nums; }
 
+/* Specimen chart — a typeset working-paper bar, not a marketing graphic.
+   Single green accent, 1px rules, mono numerals, no gradient or shadow.
+   It reads as something out of a workpaper because it is drawn like one. */
+.chart { margin-top: var(--s3); }
+.barrow + .barrow { margin-top: var(--s5); }
+.barhead { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s4); margin-bottom: 6px; }
+.barhead .v { font-family: var(--mono); font-variant-numeric: tabular-nums; font-weight: 500; }
+.bartrack { height: 12px; background: var(--bg); border: 1px solid var(--rule); border-radius: 2px; overflow: hidden; }
+.barfill { height: 100%; background: var(--accent); }
+.barfoot { margin-top: 6px; font-size: 0.78rem; color: var(--muted); font-family: var(--mono); max-width: none; }
+.barfoot.flag { color: var(--flag); }
+
+/* Compact spec list — scannable, ruled, ledger-like. Replaces run-on
+   prose where a paragraph is really just a list of domain terms. */
+.speclist { list-style: none; margin-top: var(--s5); display: grid; grid-template-columns: 1fr 1fr; column-gap: var(--s7); }
+.speclist li { padding-block: var(--s3); border-top: 1px solid var(--rule); font-size: 0.98rem; }
+@media (max-width: 560px) { .speclist { grid-template-columns: 1fr; } }
+
 /* ============================================================
    Founder card
    ============================================================ */

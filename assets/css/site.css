@@ -7,7 +7,7 @@
 
 /* ---- Tokens: light ("ledger in daylight") ---- */
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
   --bg: #F4F3EA;
   --surface: #FCFBF4;
   --ink: #191D19;
@@ -30,27 +30,13 @@
   --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px; --s9: 96px;
 }
 
-/* ---- Tokens: dark ("desk at night") — negative of the ledger ----
-   Re-tuned 17 Jul: the original values collapsed into one black slab on
-   phones — surface vs bg was ~1.1:1 and the hairlines vanished, so the
-   ledger structure (tiles, bands, rules) that carries the brand in light
-   mode disappeared. Same green-cast family, more separation between the
-   layers. All text pairs re-verified AA (ink 15.2:1 · muted 7.3:1 ·
-   accent 7.4:1 · flag 5.4:1 on bg). */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #131814;
-    --surface: #1D241E;
-    --ink: #ECEDE2;
-    --muted: #9FA79A;
-    --lede-ink: #C6CCBF;
-    --rule: #333C34;
-    --accent: #55B98B;
-    --accent-ink: #111512;
-    --flag: #DE6B52;
-    --tick: #55B98B;
-  }
-}
+/* ---- Dark mode: removed 19 Jul 2026. Re-tuned once (17 Jul) for AA
+   contrast and shipped, but on a real device it stayed the weaker
+   experience — the whole identity (ruled paper, ink on cream) is a
+   light-mode metaphor that doesn't survive inversion. Site has no
+   toggle, so a dark-OS visitor got the compromised version with no way
+   to opt out; forcing light means everyone sees the actual brand.
+   See DESIGN.md decisions log 2026-07-19 if this is ever revisited. */
 
 /* ---- Reset ---- */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -171,11 +157,6 @@ a:hover { text-decoration-thickness: 2px; }
    Header / nav — CSS-only mobile disclosure, zero JS
    ============================================================ */
 .site-header { border-bottom: 1px solid var(--rule); position: sticky; top: 0; background: var(--bg); z-index: 10; }
-/* Dark: layer the sticky header above the page like the lamp-lit desk
-   surface — light mode's paper-on-paper is the point; bg-on-bg is mud. */
-@media (prefers-color-scheme: dark) {
-  .site-header { background: var(--surface); }
-}
 .nav { display: flex; align-items: center; justify-content: space-between; gap: var(--s5); padding-block: var(--s4); }
 .nav-logo img { height: 30px; width: auto; }
 
@@ -420,10 +401,6 @@ a:hover { text-decoration-thickness: 2px; }
 }
 .mt-4 { margin-top: var(--s4); } .mt-5 { margin-top: var(--s5); } .mt-6 { margin-top: var(--s6); }
 .logo-dark { display: none; }
-@media (prefers-color-scheme: dark) {
-  .logo-light { display: none; }
-  .logo-dark { display: block; }
-}
 
 /* ============================================================
    Print — /services/ and /construction-finance/ print as working papers

@@ -342,6 +342,7 @@ a:hover { text-decoration-thickness: 2px; }
 .barfill { height: 100%; background: var(--accent); }
 .barfoot { margin-top: 6px; font-size: 0.78rem; color: var(--muted); font-family: var(--mono); max-width: none; }
 .barfoot.flag { color: var(--flag); }
+.barnote { margin-top: var(--s4); font-size: 0.78rem; color: var(--muted); }
 
 /* Compact spec list — scannable, ruled, ledger-like. Replaces run-on
    prose where a paragraph is really just a list of domain terms. */

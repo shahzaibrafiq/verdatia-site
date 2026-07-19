@@ -87,7 +87,14 @@ section + section { border-top: 1px solid var(--rule); }
 section[id], .ledger .row[id] { scroll-margin-top: 72px; }
 
 @media (max-width: 720px) {
-  section { padding-block: var(--s7); }
+  /* More air between sections on phones. The mobile padding used to be
+     smaller than desktop (48 vs 64), which crammed the tail of one
+     section, a whole section, and the head of the next onto one screen —
+     so it read as "mixed up." 64px (top of the design system's sanctioned
+     48–64 section range) gives each section its own breath without
+     panelizing the page into a SaaS-style deck (which the document
+     aesthetic deliberately rejects). */
+  section { padding-block: var(--s8); }
 }
 
 /* ============================================================

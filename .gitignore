@@ -1,4 +1,21 @@
+# OS / editor cruft
 .DS_Store
-.gstack/
+Thumbs.db
 ~$*
+*.swp
+.vscode/
+.idea/
+
+# Local tooling
+.gstack/
 .claude/
+
+# Never commit real environment values. This site has no backend and needs
+# none today, but the guard costs nothing and is awkward to add after the fact.
+.env
+.env.*
+!.env.example
+
+# Local scratch
+*.log
+.cache/

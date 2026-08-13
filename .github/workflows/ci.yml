@@ -1,0 +1,106 @@
+name: CI
+
+# This site is raw HTML served straight from main by GitHub Pages, with no
+# build step. Nothing sits between a bad push and verdatia.com. These checks
+# are that missing gap: they run before a merge, not after.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Custom domain is still configured
+        # If CNAME is deleted or edited, Pages silently stops serving
+        # verdatia.com and falls back to the github.io URL. The site looks
+        # fine; the domain everyone has been given 404s. Highest-consequence,
+        # lowest-cost thing to guard on this repo.
+        run: |
+          if [ ! -f CNAME ]; then
+            echo "::error::CNAME is missing. The custom domain would break."
+            exit 1
+          fi
+          DOMAIN=$(tr -d '[:space:]' < CNAME)
+          if [ "$DOMAIN" != "verdatia.com" ]; then
+            echo "::error::CNAME says '$DOMAIN', expected 'verdatia.com'."
+            exit 1
+          fi
+          echo "CNAME ok: $DOMAIN"
+
+      - name: Internal links and assets resolve
+        run: python3 scripts/check-links.py
+
+      - name: HTML is well formed
+        # Catches unclosed tags and malformed markup, which browsers hide by
+        # silently repairing until one of them repairs it differently.
+        run: |
+          python3 - <<'PY'
+          import sys, pathlib
+          from html.parser import HTMLParser
+
+          VOID = {"area","base","br","col","embed","hr","img","input",
+                  "link","meta","param","source","track","wbr"}
+
+          class Checker(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.stack, self.errors = [], []
+              def handle_starttag(self, tag, attrs):
+                  if tag not in VOID:
+                      self.stack.append((tag, self.getpos()[0]))
+              def handle_endtag(self, tag):
+                  if tag in VOID:
+                      return
+                  if not self.stack:
+                      self.errors.append(f"line {self.getpos()[0]}: </{tag}> with nothing open")
+                      return
+                  if self.stack[-1][0] == tag:
+                      self.stack.pop()
+                  else:
+                      open_tag, open_line = self.stack[-1]
+                      self.errors.append(
+                          f"line {self.getpos()[0]}: </{tag}> but <{open_tag}> "
+                          f"from line {open_line} is still open")
+                      for i in range(len(self.stack) - 1, -1, -1):
+                          if self.stack[i][0] == tag:
+                              del self.stack[i:]
+                              break
+
+          failed = False
+          for p in sorted(pathlib.Path(".").rglob("*.html")):
+              if ".git" in p.parts:
+                  continue
+              c = Checker()
+              c.feed(p.read_text(encoding="utf-8", errors="replace"))
+              errs = c.errors + [f"<{t}> from line {l} never closed" for t, l in c.stack]
+              if errs:
+                  failed = True
+                  print(f"\n{p}:")
+                  for e in errs[:10]:
+                      print(f"  {e}")
+          if failed:
+              print("\nMalformed HTML found.")
+              sys.exit(1)
+          print("HTML well formed.")
+          PY
+
+      - name: No oversized assets
+        # A stray multi-megabyte image is the usual way a fast static site
+        # quietly stops being fast.
+        run: |
+          BIG=$(find . -path ./.git -prune -o -type f -size +2M -print 2>/dev/null)
+          if [ -n "$BIG" ]; then
+            echo "::warning::Files over 2MB (slow page loads):"
+            echo "$BIG" | sed 's/^/  /'
+          else
+            echo "No oversized files."
+          fi

@@ -4,7 +4,7 @@ The Verdatia company site. Static HTML, no build step, no JavaScript.
 
 **Live:** https://verdatia.com
 
-**Brand system, copy decisions, and firm plan of record:** private repo `verdatia` (fonts, logos, DESIGN.md, WEBSITE.md — read DESIGN.md before any visual change here).
+**Brand system, copy decisions, and firm plan of record:** private repo `verdatia` (fonts, logos, DESIGN.md, WEBSITE-DECISIONS.md — read DESIGN.md before any visual change here).
 
 ## How it deploys
 
